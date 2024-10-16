@@ -1,0 +1,15 @@
+(in-package #:bugwm)
+
+(defun make-print-wl-server-thread ()
+  (let ((top-level *standard-output*)
+		 (disp (wl-display-create)))
+	(bordeaux-threads:make-thread
+   (lambda ()
+	 (cond ((equal nil disp)
+			(format top-level "failed to create display!"))
+		   (t (let ((sock (wl-display-add-socket-auto disp)))
+				(cond ((equal nil sock)
+					   (format top-level "failed to bind to socket!"))
+					  (t (format top-level "running display on ~a" sock)
+						 (wl-display-run disp)
+						 (wl-display-destroy disp))))))))))
