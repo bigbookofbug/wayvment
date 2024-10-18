@@ -31,17 +31,33 @@
 (define site-options
   (list ""))
 
-(define pre-shell-hooks
-  "a guile command to run before 'guix shell' is invoked. this allows for the evaluation of guile code before entering the shell environment if there is the need for such.
-example:
-(define write-manifest
-  (call-with-output-file \"manifest.scm\"
+(define-public (make-package-list packages)
+  "Returns a list of packages as a spaced string"
+  (string-join
+   (map (lambda (x)
+	  (if (symbol? x)
+	      (symbol->string x)
+	      x))
+	packages)
+   " "))
+
+(define (write-emacs-export)
+  (let ((pkgs (make-package-list
+	       (append site-packages wayland-dependencies lisp-dependencies))))
+  (call-with-output-file "packages.el"
     (lambda (output-port)
-      (pretty-print '(specifications->manifest '(\"hello\")) output-port)))) ")
+      (display (string-append "
+(load-file \""(getenv "HOME")"/guix-config/home/packages/emacs/bug/helpers.el\")
+
+(require 'helpers)
+
+(defvar pkgs \"" pkgs "\")
+
+(bug/add-paths (concat \"guix shell \" pkgs \" --search-paths\"))") output-port)))))
 
 (define shell
   (make-gshell
-   #:pre-shell-hooks #f
+   #:pre-shell-hooks (lambda () (write-emacs-export))
    #:packages (append site-packages wayland-dependencies lisp-dependencies)
    #:options #f
    #:command "sh"))

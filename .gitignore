@@ -1,3 +1,5 @@
 *.~undo-tree~
+packages.el
+goals.org
 !.gitignore
 *.fasl
