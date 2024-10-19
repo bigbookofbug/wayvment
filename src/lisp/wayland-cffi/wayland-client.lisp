@@ -2,6 +2,12 @@
 
 (in-package #:bugwm)
 
+(cffi:define-foreign-library wayland-client
+  (:search-path (get-shell-libs))
+  (:unix (:or "libwayland-client.so" "libwayland-client.so.0"))
+  (t (:default "libwayland-client.so")))
+ (cffi:use-foreign-library wayland-client)
+
 (cffi:defcfun "wl_display_connect" :pointer
   (name :string))
 

@@ -54,9 +54,14 @@ If the event loop has existing sources, those cannot be safely removed afterward
   "0 on success, -1 on polling/timer error"
   (loop :pointer)
   (timeout :int))
+
 ;;;
+;;; DISPLAY
 ;;;
-;;;
+;; 'wl_display_add_socket' can either accept the display pointer or NULL.
+;; wrapper defun:
+;; (display-add-socket (&optional display)
+;; ;; (wl-display-add-socket (or $WLDISPLAY $XDG_RUNDIR display)))
 
 (cffi:defcfun "wl_display_create" :pointer
   "struct wl_display * wl_display_create(void)
@@ -69,14 +74,6 @@ Returns wayland display object or null if failed to create")
 (cffi:defcfun "wl_display_get_event_loop" :pointer
 "Get a reference to a wl_display's wl_event_loop"
   (display :pointer))
-
-;;;
-;;; SOCKETS
-;;;
-;; 'wl_display_add_socket' can either accept the display pointer or NULL.
-;; wrapper defun:
-;; (display-add-socket (&optional display)
-;; ;; (wl-display-add-socket (or $WLDISPLAY $XDG_RUNDIR display)))
 
 (cffi:defcfun "wl_display_add_socket" :int
   "Return 0 on success or -1 on failure.
@@ -93,14 +90,9 @@ On success, the socket fd ownership is transferred to libwayland: libwayland wil
   (display :pointer)
   (sock-fd :int))
 
-
 (cffi:defcfun "wl_display_add_socket_auto" :string
   "const char * wl_display_add_socket_auto(struct wl_display *display)"
 	 (display :pointer))
-
-;;;
-;;;
-;;;
 
 (cffi:defcfun "wl_display_terminate" :void
   (display :pointer))
@@ -111,3 +103,7 @@ On success, the socket fd ownership is transferred to libwayland: libwayland wil
 
 (cffi:defcfun "wl_display_flush_clients" :void
   (display :pointer))
+
+;;;
+;;;
+;;;

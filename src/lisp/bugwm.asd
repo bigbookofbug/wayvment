@@ -13,7 +13,8 @@
   (:module "wayland-cffi"
 		   :depends-on ("package")
 		   :components ((:file "wayland-server")
-						(:file "wayland-client")))))
+						(:file "wayland-client")
+						(:file "wayland-util")))))
 
 ;; TODO - should wayland-cffi be repackaged?
 ;; mayb move all ./lisp/* into ./src
