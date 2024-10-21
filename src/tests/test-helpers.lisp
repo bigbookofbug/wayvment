@@ -1,4 +1,4 @@
-(in-package #:wayland-cffi.tests)
+(in-package #:wayland.tests)
 
 (defvar *test-name* nil)
 

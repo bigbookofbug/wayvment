@@ -1,5 +1,5 @@
 
-(in-package #:wayland-cffi)
+(in-package #:wayland)
 
 ;; exports:
 ;; ;; CLASSES/METHODS:
@@ -60,15 +60,15 @@
 	(:documentation "The lisp class for c-struct wl-list, a doubly linked list of elements all of the same type. All slots contain foreign-pointers. Direct instantiation of this class is generally discouraged. Instead, use `with-wayland-list` where possible."))
 
 (defmethod initialize-instance :after ((wlist wayland-list) &key)
-  (let ((c-list (cffi:foreign-alloc '(:struct wayland-cffi.ffi::wl-list))))
-	(wayland-cffi.ffi::wl-list-init c-list)
+  (let ((c-list (cffi:foreign-alloc '(:struct wl-list))))
+	(wl-list-init c-list)
 	(setf (c-struct wlist) c-list)
 	(setf (prev wlist) (cffi:mem-aref c-list :pointer 0))
 	(setf (next wlist) (cffi:mem-aref c-list :pointer 1))))
 
 
 (defmethod cleanup ((inst wayland-list))
-  (let* ((obj '(:struct wayland-cffi.ffi::wl-list))
+  (let* ((obj '(:struct wl-list))
 		 (ptr (cffi:mem-aptr (c-struct inst) obj)))
 	(cffi:foreign-free ptr)
 	(setf (prev inst) nil)
@@ -90,12 +90,12 @@
 
 (defun wayland-list-empty-p (lst)
   "`wl_list_empty` returns 1 on empty or 0 on not-empty. Here we wrap it to give a name and return value appropriate for lisp."
-  (if (= 1 (wayland-cffi.ffi::wl-list-empty (slot-value lst 'c-struct)))
+  (if (= 1 (wl-list-empty (slot-value lst 'c-struct)))
 		 t
 		 nil))
 
 (defun wayland-list-length (lst)
-  (wayland-cffi.ffi::wl-list-length (c-struct lst)))
+  (wl-list-length (c-struct lst)))
 
 (defun wayland-list-insert (lst elem coll)
   "A wrapper for c-function `wl_list_insert`, where LST and ELEM make up the wayland-list and the element to be inserted after it, and COLL is a global collection of elements in the list that is used to access the memory references without relying on additional CFFI.
@@ -105,7 +105,7 @@ If COLL is empty, push LST into COLL and recur. If ELEM is not the last item in 
 	 (wayland-list-insert lst elem (pushnew lst coll)))
 
 	(t
-	 (wayland-cffi.ffi::wl-list-insert (slot-value lst 'c-struct)
+	 (wl-list-insert (slot-value lst 'c-struct)
 					 (slot-value elem 'c-struct))
 	 ;; eml->prev = list
 	 (setf (prev elem) (c-struct lst))

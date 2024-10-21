@@ -1,7 +1,6 @@
 ;;;; util.lisp
 
-(in-package #:wayland-cffi.ffi)
-;; (asdf:load-system :cffi-libffi)
+(in-package #:wayland.ffi)
 
 (cffi:defcstruct wl-interface)
 
