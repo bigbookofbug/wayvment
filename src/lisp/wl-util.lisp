@@ -1,20 +1,5 @@
-
+;;;; wl-util.lisp
 (in-package #:wayland)
-
-;; exports:
-;; ;; CLASSES/METHODS:
-;; ;; wayland-list
-;; ;; wayland-message
-;; ;; wayland-interface
-;; ;; cleanup methods
-;; ;;
-;; ;; FUNCTIONS/MACROS
-;; ;; make-wayland-list
-;; ;; with-wayland-list
-;; ;; wayland-list-empty-p
-;; ;; wayland-list-insert
-;; ;; wayland-list-length
-;; ;;
 
 (defgeneric cleanup (inst)
   (:documentation "cleans up memory after use of lisp class and sets all slots to NIL"))
@@ -28,9 +13,11 @@
 		 :type :string
 		 :documentation "Corresponding protocol message")
    (signature :initarg :signature
-		 :accessor signature
-		 :type :string
-		 :documentation "Ordered list of symbols representing the data types of the message args. When args are NIL, is an empty string.")
+			  :accessor signature
+			  :type :string
+			  :documentation "Ordered list of symbols representing the
+data types of the message args.
+When args are NIL, is an empty string.")
    (types :initarg :types
 		  :accessor types
 		  :type (or nil cffi:foreign-pointer)
@@ -44,20 +31,27 @@
 ;;; WL-LIST
 ;;;
 
-  (defclass wayland-list ()
+(defclass wayland-list ()
 	((prev :initarg :prev
 		   :type (or nil cffi:foreign-pointer)
 		   :accessor prev
-		   :documentation "Points to the last element in the list, or to list head if list is empty")
+		   :documentation "Points to the last element in the list,
+or to list head if list is empty")
 	 (next :initarg :next
 		   :type (or nil cffi:foreign-pointer)
 		   :accessor next
-		   :documentation "Points to the first element in the list, or to list head if list is empty")
+		   :documentation "Points to the first element in the list,
+or to list head if list is empty")
 	 (c-struct :initarg :c-struct
 			   :type (or nil cffi:foreign-pointer)
 			   :accessor c-struct
-			   :documentation "Helper slot to access the memory address of the instance itself."))
-	(:documentation "The lisp class for c-struct wl-list, a doubly linked list of elements all of the same type. All slots contain foreign-pointers. Direct instantiation of this class is generally discouraged. Instead, use `with-wayland-list` where possible."))
+			   :documentation "Helper slot to access the memory
+address of the instance itself."))
+	(:documentation "The lisp class for c-struct wl-list,
+a doubly linked list of elements all of the same type.
+All slots contain foreign-pointers. Direct instantiation
+of this class is generally discouraged. Instead, use
+`with-wayland-list` where possible."))
 
 (defmethod initialize-instance :after ((wlist wayland-list) &key)
   (let ((c-list (cffi:foreign-alloc '(:struct wl-list))))
@@ -81,7 +75,11 @@
 
 ;; variable-form list args ???
 (defmacro with-wayland-list (lst &body body)
-  "User-facing wrapper for wayland-list, where LST is the list to be created. This allows for memory safety when using the wl-list struct itself. If LST is part of another class that will continue outside its instantiation, defer to make-wayland-list and manually call `cleanup` after use."
+  "User-facing wrapper for wayland-list, where LST is the list to be
+created. This allows for memory safety when using the wl-list struct
+itself. If LST is part of another class that will continue outside
+its instantiation, defer to make-wayland-list and manually call
+`cleanup` after use."
   `(let ((,lst (make-wayland-list)))
 	 (unwind-protect
 		  (progn
@@ -89,17 +87,23 @@
 	   (cleanup ,lst))))
 
 (defun wayland-list-empty-p (lst)
-  "`wl_list_empty` returns 1 on empty or 0 on not-empty. Here we wrap it to give a name and return value appropriate for lisp."
+  "`wl_list_empty` returns 1 on empty or 0 on not-empty.
+Here we wrap it to give a name and return value appropriate for lisp."
   (if (= 1 (wl-list-empty (slot-value lst 'c-struct)))
-		 t
-		 nil))
+	  t
+	  nil))
 
 (defun wayland-list-length (lst)
   (wl-list-length (c-struct lst)))
 
 (defun wayland-list-insert (lst elem coll)
-  "A wrapper for c-function `wl_list_insert`, where LST and ELEM make up the wayland-list and the element to be inserted after it, and COLL is a global collection of elements in the list that is used to access the memory references without relying on additional CFFI.
-If COLL is empty, push LST into COLL and recur. If ELEM is not the last item in the list, grab the value of the last item and update its slots to reference the newly-added ELEM."
+  "A wrapper for c-function `wl_list_insert`, where LST and ELEM make up
+the wayland-list and the element to be inserted after it, and COLL is a
+global collection of elements in the list that is used to access the memory
+references without relying on additional CFFI.
+If COLL is empty, push LST into COLL and recur. If ELEM is not the last item
+in the list, grab the value of the last item and update its slots to reference
+the newly-added ELEM."
   (cond
 	((not coll)
 	 (wayland-list-insert lst elem (pushnew lst coll)))

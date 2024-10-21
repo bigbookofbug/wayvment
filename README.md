@@ -1,6 +1,4 @@
 # cl-wayland
-### _emma thompson <bigbookofbug@proton.me>_
-
 Lisp bindings for libwayland, with a focus on providing safe wrappers for the underlying C code, and avoidance of CFFI in protocol generation whenever possible.
 
 ### Current Progress:
