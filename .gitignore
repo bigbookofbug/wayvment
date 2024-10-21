@@ -3,3 +3,11 @@ packages.el
 goals.org
 !.gitignore
 *.fasl
+.#*
+*.c
+*.h
+bugwm.lisp
+client.lisp
+server.lisp
+headers
+scanner

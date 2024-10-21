@@ -60,3 +60,33 @@
 				 :name client-number))))
 	  (error (c)
 		(format top-level "failed to connect to display!~% ~a" c)))))
+
+;; the sequel
+(cffi:defcstruct wl-registry
+  (name :uint32)
+  (id :pointer))
+
+(cffi:defcfun "wl_display_get_registry" :pointer
+	(wl-display :pointer))
+
+(cffi:defcfun "wl_registry_add_listener" :int
+  (wl-registry :pointer)
+  (listener :pointer)
+  (data :pointer))
+
+(cffi:defcstruct wl-registry
+	(global :pointer)
+  (global-remove :pointer))
+
+(defun registry-handle-global (data registry name interface version)
+  (format t "interface: ~a, version: ~a, name ~a~%"))
+
+; (defun main-2 ()
+; (let ((c-regristry (cffi:foreign-alloc '(:struct wl-registry)))
+;	  (display (wl-display-connect
+;				(or disp +envar-wl-display-xdg+
+;					+envar-wl-display-xdg-wl-0+))))
+;  (unwind-protect
+;	   (progn
+;		 (
+;		  (cffi-sys:foreign-free c-registry))

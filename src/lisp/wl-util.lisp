@@ -65,7 +65,6 @@
 	(setf (c-struct wlist) c-list)
 	(setf (prev wlist) (cffi:mem-aref c-list :pointer 0))
 	(setf (next wlist) (cffi:mem-aref c-list :pointer 1))))
-;	(tg:finalize wlist (lambda () (cffi:foreign-free c-list)))))
 
 
 (defmethod cleanup ((inst wayland-list))
@@ -80,6 +79,7 @@
 (defun make-wayland-list ()
   (make-instance 'wayland-list))
 
+;; variable-form list args ???
 (defmacro with-wayland-list (lst &body body)
   "User-facing wrapper for wayland-list, where LST is the list to be created. This allows for memory safety when using the wl-list struct itself. If LST is part of another class that will continue outside its instantiation, defer to make-wayland-list and manually call `cleanup` after use."
   `(let ((,lst (make-wayland-list)))

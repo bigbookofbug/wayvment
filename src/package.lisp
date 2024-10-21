@@ -1,8 +1,5 @@
 ;;;; package.lisp
 
-(defpackage #:bugwm
-  (:use #:cl))
-
 (defun get-shell-libs ()
   (let ((guix-env (uiop:getenv "GUIX_ENVIRONMENT")))
 	(pathname (uiop:strcat guix-env "/lib/"))))

@@ -52,8 +52,7 @@ Where NAME is the corresponding protocol interface and VERSION represents versio
 (cffi:defcfun "wl_list_insert" :void
   "Insert ELM in list after LIST"
   (list :pointer)
-  (elm :pointer)
-  (:documentation )
+  (elm :pointer))
 
 (cffi:defcfun "wl_list_length" :int
   (list :pointer))

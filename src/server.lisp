@@ -3,6 +3,9 @@
 (defvar *server-thread* nil)
 (defvar *wl-display* nil)
 
+
+;;; TODO - form wrappers for wl-display-create
+;;;; - defclass wayland-display
 (defun make-server-thread ()
   (let ((top-level *standard-output*))
 	(handler-case

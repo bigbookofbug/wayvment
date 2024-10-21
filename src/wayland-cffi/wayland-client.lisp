@@ -29,3 +29,6 @@
 (cffi:defcfun "wl_display_flush" :int
   "-1 on failure."
   (display :pointer))
+
+(cffi:defcfun "wl_display_roundtrip" :int
+  (display :pointer))

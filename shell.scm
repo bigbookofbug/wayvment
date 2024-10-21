@@ -23,8 +23,9 @@
   (list 'sbcl
 	'sbcl-bordeaux-threads
 	'sbcl-cffi
+	;; maybe a differnent parser?
+	'sbcl-xmls
 	'sbcl-closer-mop
-	'sbcl-trivial-garbage
 	'sbcl-cl-ppcre
 	'sbcl-quickproject
 	'sbcl-alexandria))
