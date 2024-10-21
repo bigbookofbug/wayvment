@@ -1,4 +1,4 @@
-headers/*
+headers/
 *.~undo-tree~
 packages.el
 goals.org
