@@ -6,8 +6,7 @@ goals.org
 .#*
 *.c
 *.h
-src/bugwm.lisp
-src/client.lisp
-src/server.lisp
-headers/
+bugwm.lisp
+client.lisp
+server.lisp
 scanner/
