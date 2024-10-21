@@ -1,6 +1,6 @@
 ;;;; server.lisp
 
-(in-package #:bugwm)
+(in-package #:wayland-cffi.ffi)
 
 (cffi:define-foreign-library wayland-server
   (:search-path (get-shell-libs))

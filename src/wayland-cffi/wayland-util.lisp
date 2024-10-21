@@ -1,7 +1,7 @@
 ;;;; util.lisp
 
-(in-package #:bugwm)
-(asdf:load-system :cffi-libffi)
+(in-package #:wayland-cffi.ffi)
+;; (asdf:load-system :cffi-libffi)
 
 (cffi:defcstruct wl-interface)
 
@@ -27,8 +27,6 @@
 ;; ;; `h`: fd
 ;; ;; `?`: following argument (`o` or `s`) is nullable
 (cffi:defcstruct wl-message
-  "NAME: the corresponding protocol message.
-SIGNATURE: ordered list of symbols representing the data types of the message args. When NIL, is an empty string."
   (name :string)
   (signature :string)
   (types (:pointer (:pointer (:struct wl-interface)))))
@@ -44,7 +42,6 @@ Where NAME is the corresponding protocol interface and VERSION represents versio
   (events (:pointer (:struct wl-message))))
 
 (cffi:defcstruct wl-list
-  "Doubly linked list, where all elements must be of the same type"
   (prev :pointer)
   (next :pointer))
 
@@ -55,18 +52,11 @@ Where NAME is the corresponding protocol interface and VERSION represents versio
 (cffi:defcfun "wl_list_insert" :void
   "Insert ELM in list after LIST"
   (list :pointer)
-  (elm :pointer))
+  (elm :pointer)
+  (:documentation )
 
 (cffi:defcfun "wl_list_length" :int
   (list :pointer))
 
 (cffi:defcfun "wl_list_empty" :int
   (list :pointer))
-
-;; (defun test-wl-list ()
-;; ;;   (let ((list (cffi:foreign-alloc 'wl-list)))
-;; ;;     (unwind-protect
-;; ;;          (progn
-;; ;;            (wl-list-init list)
-;; ;;            (format t "List initialized. Length: ~a~%" (wl-list-length list)))
-;; ;;       (cffi:foreign-free list))))

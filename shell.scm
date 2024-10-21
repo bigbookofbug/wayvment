@@ -24,6 +24,7 @@
 	'sbcl-bordeaux-threads
 	'sbcl-cffi
 	'sbcl-closer-mop
+	'sbcl-trivial-garbage
 	'sbcl-cl-ppcre
 	'sbcl-quickproject
 	'sbcl-alexandria))
