@@ -1,3 +1,5 @@
+;; generated using WIP project guix-graze
+;; if interested, look at https://gitlab.com/bigbookofbug/guix-graze
 ;; change this line to whichever directory "graze.scm" is located in
 (add-to-load-path (string-append (getenv "HOME") "/Documents/graze/"))
 (use-modules (graze shell-utils))
@@ -7,23 +9,17 @@
    'coreutils
    'bash
    'curl
-   'fish
-   'emacs-next
    'gcc-toolchain
    'libffi))
 
 (define wayland-dependencies
   (list
-   'wayland
-   'wayland-protocols
-   'wayland-utils
-   'wlroots))
+   'wayland))
 
 (define lisp-dependencies
   (list 'sbcl
-	'sbcl-bordeaux-threads
+	'sbcl-bordeaux-threads ;;for testing - not required for build
 	'sbcl-cffi
-	;; maybe a differnent parser?
 	'sbcl-xmls
 	'sbcl-closer-mop
 	'sbcl-cl-ppcre

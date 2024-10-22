@@ -1,4 +1,4 @@
-(in-package #:wayland.tests)
+(in-package #:wayvment.tests)
 
 (defclass element (wayland-list)
   ((test-val :initarg :test-val

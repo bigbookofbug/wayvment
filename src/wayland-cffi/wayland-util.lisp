@@ -1,6 +1,18 @@
 ;;;; util.lisp
+(defpackage #:wayvment.ffi-util
+  (:use #:cl #:cffi)
+  (:export
+   #:wl-message
+   #:wl-interface
+   #:wl-object
+   ;; wl-list-exports
+   #:wl-list
+   #:wl-list-init
+   #:wl-list-insert
+   #:wl-list-length
+   #:wl-list-empty))
 
-(in-package #:wayland.ffi)
+(in-package #:wayvment.ffi-util)
 
 (cffi:defcstruct wl-interface)
 
@@ -36,6 +48,7 @@ Where NAME is the corresponding protocol interface and VERSION represents versio
   (name :string)
   (version :int)
   (method-count :int)
+  ;; is referencing the underlying struct necessary ??
   (methods (:pointer (:struct wl-message)))
   (event-count :int)
   (events (:pointer (:struct wl-message))))
@@ -53,8 +66,46 @@ Where NAME is the corresponding protocol interface and VERSION represents versio
   (list :pointer)
   (elm :pointer))
 
+(cffi:defcfun "wl_list_remove" :void
+  "Remove ELM from list, leaving ELM in in an invalid state."
+  (elm :pointer))
+
 (cffi:defcfun "wl_list_length" :int
   (list :pointer))
 
 (cffi:defcfun "wl_list_empty" :int
   (list :pointer))
+
+(cffi:defcfun "wl_list_insert_list" :void
+  "Insert all elements of OTHER into LIST, after element
+represented by LIST."
+  (list :pointer)
+  (other :pointer))
+
+;; WL_TYPEOF(expr) = typeof(expr)
+;; used to get the address of a container struct from one of its members.
+;; (defun container-of (pointer, sample, member)
+;; ;; ([typeof(sample)] ptr[as string] - offset ([typeof](*sample), member)))
+;; ideally, we can use classes to avoid needing this
+;; (defun container-of (ptr type member)
+;; ;;   (declare (type cffi:foreign-pointer ptr))
+;; ;;   (cffi:make-pointer (- (cffi:pointer-address ptr) (cffi:foreign-slot-offset type member))))
+
+(cffi:defcstruct wl-array
+  (size :sizet)
+  (alloc :sizet)
+  (data :pointer))
+
+(cffi:defcfun "wl_array_init" :void
+  (array :pointer))
+
+(cffi:defcfun "wl_array_release" :void
+  (array :pointer))
+
+(cffi:defcfun "wl_array_add" :pointer
+  (array :pointer)
+  (size :sizet))
+
+(cffi:defcfun "wl_array_copy" :int
+  (array :pointer)
+  (source :pointer))

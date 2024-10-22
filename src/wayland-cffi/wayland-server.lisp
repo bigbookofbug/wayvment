@@ -1,6 +1,18 @@
-;;;; server.lisp
+;;;; wayland-server.lisp
+(defpackage #:wayvment.ffi-server
+  (:use #:cl #:cffi)
+  (:export
+   #:wl-display-create
+   #:wl-display-destroy
+   #:wl-display-get-event-loop
+   #:wl-display-add-socket
+   #:wl-display-add-socket-auto
+   #:wl-display-add-socket-fd
+   #:wl-display-terminate
+   #:wl-display-run
+   #:wl-display-flush-clients))
 
-(in-package #:wayland.ffi)
+(in-package #:wayvment.ffi-server)
 
 (cffi:define-foreign-library wayland-server
   (:search-path (get-shell-libs))
@@ -58,10 +70,18 @@ If the event loop has existing sources, those cannot be safely removed afterward
 ;;;
 ;;; DISPLAY
 ;;;
-;; 'wl_display_add_socket' can either accept the display pointer or NULL.
-;; wrapper defun:
-;; (display-add-socket (&optional display)
-;; ;; (wl-display-add-socket (or $WLDISPLAY $XDG_RUNDIR display)))
+;; ;; the wayland display itself is an opaque struct to some degree
+;; ;; for this reason, the actual cstruct will not need to be created
+;; ;; rather, we can rely on a defclass holding a foreign pointer
+;; ;; this pointer can then be used in the below function.
+;; ;; rather than allocating memory to premptively, the class will hold
+;; ;; a pointer to the result of wl_display_create
+;; ;; wl_registry likely has the same behavior...
+;;
+;; ;; 'wl_display_add_socket' can either accept the display pointer or NULL.
+;; ;; wrapper defun:
+;; ;; (display-add-socket (&optional display)
+;; ;; ;; (wl-display-add-socket (or $WLDISPLAY $XDG_RUNDIR display)))
 
 (cffi:defcfun "wl_display_create" :pointer
   "struct wl_display * wl_display_create(void)

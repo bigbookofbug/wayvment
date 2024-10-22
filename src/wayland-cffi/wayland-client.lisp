@@ -1,6 +1,14 @@
-;;;; client.lisp
-
-(in-package #:wayland.ffi)
+;;;; wayland-client.lisp
+(defpackage #:wayvment.ffi-client
+  (:use #:cl #:cffi)
+  (:export #:wl-display-connect
+		   #:wl-display-disconnect
+		   #:wl-display-connect-to-fd
+		   #:wl-display-get-fd
+		   #:wl-display-dispatch
+		   #:wl-display-flush
+		   #:wl-display-roundtrip))
+(in-package #:wayvment.ffi-client)
 
 (cffi:define-foreign-library wayland-client
   (:search-path (get-shell-libs))

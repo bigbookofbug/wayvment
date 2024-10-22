@@ -1,6 +1,6 @@
-;;;; bugwm.asd
+;;;; wayvment.asd
 
-(asdf:defsystem #:wayland
+(asdf:defsystem #:wayvment
   :description "Lispy bindings for the wayland protocol"
   :author "emma thompson <bigbookofbug@proton.me>"
   :license "Specify license here"
@@ -13,7 +13,6 @@
 			   #:trivial-garbage)
   :components ((:file "package")
 			   (:module "wayland-cffi"
-				:depends-on ("package")
 				:components ((:file "wayland-server")
 							 (:file "wayland-client")
 							 (:file "wayland-util")))

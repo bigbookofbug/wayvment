@@ -61,11 +61,12 @@
 	  (error (c)
 		(format top-level "failed to connect to display!~% ~a" c)))))
 
-;; the sequel
-(cffi:defcstruct wl-registry
-  (name :uint32)
-  (id :pointer))
 
+;; the sequel
+
+;;;; these two functions are not in the .so
+;;;; this makes the wl-book unsable for a time
+;;;; we must build the scanner now
 (cffi:defcfun "wl_display_get_registry" :pointer
 	(wl-display :pointer))
 
@@ -74,19 +75,32 @@
   (listener :pointer)
   (data :pointer))
 
-(cffi:defcstruct wl-registry
-	(global :pointer)
+(cffi:defcstruct wl-registry-listener
+  (global :pointer)
   (global-remove :pointer))
 
-(defun registry-handle-global (data registry name interface version)
-  (format t "interface: ~a, version: ~a, name ~a~%"))
+(cffi:defcallback registry-handle-global :void
+	((data :pointer)
+	 (registry :pointer)
+	 (name :uint32)
+	 (interface :string)
+	 (version :uint32))
+  (format t "interface: ~a, version: ~a, name ~a~%"
+		  interface version name))
+(cffi:defcallback registry-handle-global-remove :void
+	((data :pointer)
+	 (registry :pointer)
+	 (name :uint32)
+	 (interface :string)
+	 (version :uint32))
+  nil)
 
-; (defun main-2 ()
-; (let ((c-regristry (cffi:foreign-alloc '(:struct wl-registry)))
-;	  (display (wl-display-connect
-;				(or disp +envar-wl-display-xdg+
-;					+envar-wl-display-xdg-wl-0+))))
-;  (unwind-protect
-;	   (progn
-;		 (
-;		  (cffi-sys:foreign-free c-registry))
+(defun make-trivial-client ()
+  (let* ((c-registry (cffi:foreign-alloc '(:struct wl-registry-listener)))
+		 (display (display-connect))
+		 (registry (wl-display-get-registry display)))
+	(cffi:with-foreign-slots ((global global-remove) * (:struct wl-registry-listener))
+	  (setf global (cffi:get-callback 'registry-handle-global))
+	  (setf global-remove (cffi:get-callback 'registry-handle-global-remove))
+	  (wl-registry-add-listener registry (cffi:mem-aref c-registry '(:struct wl-registry-listener)) (cffi:null-pointer))
+	  (display-roundtrip display))))

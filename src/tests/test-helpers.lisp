@@ -1,4 +1,4 @@
-(in-package #:wayland.tests)
+(in-package #:wayvment.tests)
 
 (defvar *test-name* nil)
 

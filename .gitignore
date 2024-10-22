@@ -10,4 +10,3 @@ goals.org
 bugwm.lisp
 client.lisp
 server.lisp
-scanner/
