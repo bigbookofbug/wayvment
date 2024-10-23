@@ -11,15 +11,16 @@
 			   #:cffi-libffi
 			   #:alexandria
 			   #:trivial-garbage)
-  :components ((:file "package")
-			   (:module "wayland-cffi"
-				:components ((:file "wayland-server")
-							 (:file "wayland-client")
-							 (:file "wayland-util")))
-			   (:module "lisp"
-				:depends-on ("package" "wayland-cffi")
-				:components ((:file "wl-util")))
+  :components ((:module "src"
+				:components ((:file "package")
+							 (:module "wayland-cffi"
+							  :components ((:file "wayland-server")
+										   (:file "wayland-client")
+										   (:file "wayland-util")))
+							 (:module "lisp"
+							  :depends-on ("package" "wayland-cffi")
+							  :components ((:file "wl-util")))))
 			   (:module "tests"
-				:depends-on ("package" "lisp")
+				:depends-on ("src")
 				:components ((:file "test-helpers")
 							 (:file "list-test" :depends-on ("test-helpers"))))))

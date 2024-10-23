@@ -4,7 +4,8 @@
   (let ((guix-env (uiop:getenv "GUIX_ENVIRONMENT")))
 	(pathname (uiop:strcat guix-env "/lib/"))))
 
-(defpackage #:wayvment-util
+(defpackage #:wayvment.util
+  (:nicknames #:wayland-util)
   (:use #:cl)
   (:export
    #:cleanup
@@ -21,19 +22,22 @@
    #:wayland-list-insert))
 
 (uiop:define-package #:wayvment
+  (:nicknames #:wayland)
   (:use #:cl)
   (:use-reexport
-   #:wayvment-util))
+   #:wayvment.util))
 
-(uiop:define-package #:wayvment-client
+(uiop:define-package #:wayvment.client
+  (:nicknames #:wayland-client)
   (:use #:cl)
   (:use-reexport
-   #:wayvment-util))
+   #:wayvment.util))
 
-(uiop:define-package #:wayvment-server
+(uiop:define-package #:wayvment.server
+  (:nicknames #:wayland-server)
   (:use #:cl)
   (:use-reexport
-   #:wayvment-util)
+   #:wayvment.util)
   (:export
    #:with-display
    #:display-destroy
@@ -41,4 +45,4 @@
 
 
 (defpackage #:wayvment.tests
-  (:use #:wayvment-util #:cl))
+  (:use #:wayvment.util #:cl))

@@ -1,5 +1,5 @@
 ;;;; wl-util.lisp
-(in-package #:wayvment-util)
+(in-package #:wayvment.util)
 
 (defgeneric cleanup (inst)
   (:documentation "cleans up memory after use of lisp class and sets all slots to NIL"))
@@ -58,15 +58,15 @@ of this class is generally discouraged. Instead, use
 `with-wayland-list` where possible."))
 
 (defmethod initialize-instance :after ((wlist wayland-list) &key)
-  (let ((c-list (cffi:foreign-alloc '(:struct wayvment.ffi-util:wl-list))))
-	(wayvment.ffi-util:wl-list-init c-list)
+  (let ((c-list (cffi:foreign-alloc '(:struct ffi-util:wl-list))))
+	(ffi-util:wl-list-init c-list)
 	(setf (c-struct wlist) c-list)
 	(setf (prev wlist) (cffi:mem-aref c-list :pointer 0))
 	(setf (next wlist) (cffi:mem-aref c-list :pointer 1))))
 
 
 (defmethod cleanup ((inst wayland-list))
-  (let* ((obj '(:struct wayvment.ffi-util:wl-list))
+  (let* ((obj '(:struct wayvment.ffi.util:wl-list))
 		 (ptr (cffi:mem-aptr (c-struct inst) obj)))
 	(cffi:foreign-free ptr)
 	(setf (prev inst) nil)
@@ -93,12 +93,12 @@ its instantiation, defer to make-wayland-list and manually call
 (defun wayland-list-empty-p (lst)
   "`wl_list_empty` returns 1 on empty or 0 on not-empty.
 Here we wrap it to give a name and return value appropriate for lisp."
-  (if (= 1 (wayvment.ffi-util:wl-list-empty (slot-value lst 'c-struct)))
+  (if (= 1 (ffi-util:wl-list-empty (slot-value lst 'c-struct)))
 	  t
 	  nil))
 
 (defun wayland-list-length (lst)
-  (wayvment.ffi-util:wl-list-length (c-struct lst)))
+  (ffi-util:wl-list-length (c-struct lst)))
 
 (defun wayland-list-insert (lst elem coll)
   "A wrapper for c-function `wl_list_insert`, where LST and ELEM make up
@@ -113,7 +113,7 @@ the newly-added ELEM."
 	 (wayland-list-insert lst elem (pushnew lst coll)))
 
 	(t
-	 (wayvment.ffi-util:wl-list-insert (slot-value lst 'c-struct)
+	 (ffi-util:wl-list-insert (slot-value lst 'c-struct)
 					 (slot-value elem 'c-struct))
 	 ;; eml->prev = list
 	 (setf (prev elem) (c-struct lst))

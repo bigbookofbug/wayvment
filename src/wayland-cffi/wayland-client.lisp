@@ -1,6 +1,7 @@
 ;;;; wayland-client.lisp
-(defpackage #:wayvment.ffi-client
-  (:use #:cl #:cffi)
+(defpackage #:wayvment.ffi.client
+  (:nicknames #:ffi-client)
+  (:use #:cl)
   (:export #:wl-display-connect
 		   #:wl-display-disconnect
 		   #:wl-display-connect-to-fd
@@ -8,7 +9,7 @@
 		   #:wl-display-dispatch
 		   #:wl-display-flush
 		   #:wl-display-roundtrip))
-(in-package #:wayvment.ffi-client)
+(in-package #:wayvment.ffi.client)
 
 (cffi:define-foreign-library wayland-client
   (:search-path (get-shell-libs))
@@ -37,6 +38,5 @@
 (cffi:defcfun "wl_display_flush" :int
   "-1 on failure."
   (display :pointer))
-
 (cffi:defcfun "wl_display_roundtrip" :int
   (display :pointer))

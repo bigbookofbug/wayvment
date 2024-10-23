@@ -1,6 +1,7 @@
 ;;;; wayland-server.lisp
-(defpackage #:wayvment.ffi-server
-  (:use #:cl #:cffi)
+(defpackage #:wayvment.ffi.server
+  (:nicknames #:ffi-server)
+  (:use #:cl)
   (:export
    #:wl-display-create
    #:wl-display-destroy
@@ -12,7 +13,7 @@
    #:wl-display-run
    #:wl-display-flush-clients))
 
-(in-package #:wayvment.ffi-server)
+(in-package #:wayvment.ffi.server)
 
 (cffi:define-foreign-library wayland-server
   (:search-path (get-shell-libs))

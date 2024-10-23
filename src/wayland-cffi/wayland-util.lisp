@@ -1,6 +1,7 @@
 ;;;; util.lisp
-(defpackage #:wayvment.ffi-util
-  (:use #:cl #:cffi)
+(defpackage #:wayvment.ffi.util
+  (:nicknames #:ffi-util)
+  (:use #:cl)
   (:export
    #:wl-message
    #:wl-interface
@@ -9,10 +10,16 @@
    #:wl-list
    #:wl-list-init
    #:wl-list-insert
+   #:wl-list-remove
    #:wl-list-length
-   #:wl-list-empty))
+   #:wl-list-empty
+   ;; wl-arrays
+   #:wl-array
+   #:wl-array-init
+   #:wl-array-add
+   #:wl-array-copy))
 
-(in-package #:wayvment.ffi-util)
+(in-package #:wayvment.ffi.util)
 
 (cffi:defcstruct wl-interface)
 
