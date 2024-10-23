@@ -1,3 +1,8 @@
+;;;;
+;;;; TESTING FILE
+;;;; NOT PART OF UNDERLYING LIBRARY
+;;;;
+
 ;;;; bugwm.lisp
 
 (in-package #:bugwm)

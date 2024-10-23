@@ -1,3 +1,8 @@
+;;;;
+;;;; TESTING FILE
+;;;; NOT PART OF UNDERLYING LIBRARY
+;;;;
+
 (in-package #:bugwm)
 
 (defvar *client-counter* 0)
