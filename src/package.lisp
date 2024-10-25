@@ -9,17 +9,20 @@
   (:use #:cl)
   (:export
    #:cleanup
+   #:wayland-object
+   #:c-struct
+   #:struct-type
    #:wayland-message
    ;; wl-list
    #:wayland-list
    #:prev
    #:next
-   #:c-struct
    #:make-wayland-list
    #:with-wayland-list
    #:wayland-list-empty-p
    #:wayland-list-length
-   #:wayland-list-insert))
+   #:wayland-list-insert
+   #:container-of))
 
 (uiop:define-package #:wayvment
   (:nicknames #:wayland)

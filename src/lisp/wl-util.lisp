@@ -2,12 +2,25 @@
 (in-package #:wayvment.util)
 
 (defgeneric cleanup (inst)
-  (:documentation "cleans up memory after use of lisp class and sets all slots to NIL"))
+  (:documentation
+   "cleans up memory after use of lisp class and sets all slots to NIL"))
+
+;; defining a root object will save a lot of repetition
+(defclass wayland-object ()
+  ((struct-type :accessor struct-type
+				:initarg :struct-type
+				:initform nil
+				:documentation "A helper to access the c-struct type")
+   (c-struct :initarg :c-struct
+			 :type (or nil cffi:foreign-pointer)
+			 :accessor c-struct
+			 :documentation "Helper slot to access the memory
+address of the instance itself.")))
 
 ;;;
 ;;; WL-MESSAGE
 ;;;
-(defclass wayland-message ()
+(defclass wayland-message (wayland-object)
   ((name :initarg :name
 		 :accessor name
 		 :type :string
@@ -34,31 +47,27 @@ When args are NIL, is an empty string.")
 ;; ;; not conflict with CL-native functions such as "list-length".
 ;; ;; For the purpose of consistency, this is may be utilized throughout
 ;; ;; the entire wl-utils portion of the bindings
-
-(defclass wayland-list ()
-	((prev :initarg :prev
-		   :type (or nil cffi:foreign-pointer)
-		   :accessor prev
-		   :documentation "Points to the last element in the list,
+;; ;; maybe a STRUCT-TYPE slot to hold the foreign type
+(defclass wayland-list (wayland-object)
+  ((prev :initarg :prev
+		 :type (or nil cffi:foreign-pointer)
+		 :accessor prev
+		 :documentation "Points to the last element in the list,
 or to list head if list is empty")
-	 (next :initarg :next
-		   :type (or nil cffi:foreign-pointer)
-		   :accessor next
-		   :documentation "Points to the first element in the list,
-or to list head if list is empty")
-	 (c-struct :initarg :c-struct
-			   :type (or nil cffi:foreign-pointer)
-			   :accessor c-struct
-			   :documentation "Helper slot to access the memory
-address of the instance itself."))
-	(:documentation "The lisp class for c-struct wl-list,
+   (next :initarg :next
+		 :type (or nil cffi:foreign-pointer)
+		 :accessor next
+		 :documentation "Points to the first element in the list,
+or to list head if list is empty"))
+  (:documentation "The lisp class for c-struct wl-list,
 a doubly linked list of elements all of the same type.
 All slots contain foreign-pointers. Direct instantiation
 of this class is generally discouraged. Instead, use
 `with-wayland-list` where possible."))
 
 (defmethod initialize-instance :after ((wlist wayland-list) &key)
-  (let ((c-list (cffi:foreign-alloc '(:struct ffi-util:wl-list))))
+  (setf (struct-type wlist) '(:struct ffi-util:wl-list))
+  (let ((c-list (cffi:foreign-alloc (struct-type wlist))))
 	(ffi-util:wl-list-init c-list)
 	(setf (c-struct wlist) c-list)
 	(setf (prev wlist) (cffi:mem-aref c-list :pointer 0))
@@ -66,7 +75,7 @@ of this class is generally discouraged. Instead, use
 
 
 (defmethod cleanup ((inst wayland-list))
-  (let* ((obj '(:struct wayvment.ffi.util:wl-list))
+  (let* ((obj (struct-type inst))
 		 (ptr (cffi:mem-aptr (c-struct inst) obj)))
 	(cffi:foreign-free ptr)
 	(setf (prev inst) nil)
@@ -78,6 +87,8 @@ of this class is generally discouraged. Instead, use
   (make-instance 'wayland-list))
 
 ;; variable-form list args ???
+;; like:
+;; ;; (dolist (i ,lst res) (make-wayland-list i))
 (defmacro with-wayland-list (lst &body body)
   "User-facing wrapper for wayland-list, where LST is the list to be
 created. This allows for memory safety when using the wl-list struct
@@ -140,3 +151,30 @@ the newly-added ELEM."
 		 (lst (cdr ,coll)))
 	 (dolist (,elm lst ,(when result result))
 	   ,@body)))
+
+(defmacro wayland-list-for-each-reverse ((elm coll &optional result) &body body)
+  `(let ((head (car ,coll))
+		 (lst (reverse (cdr ,coll))))
+	 (dolist (,elm lst ,(when result result))
+	   ,@body)))
+
+
+;; this honestly might not be necessary
+;; the classes provide accessors for the pointers already
+;; keeping just in case, however, as some wl functions rely on it
+(defun get-private-slot-util (slt)
+  "helper function for container-of-raw"
+	   (read-from-string (uiop:strcat "ffi-util::" (symbol-name slt))))
+
+(defun container-of (sample member)
+  (let* ((member-ptr (cffi:foreign-slot-pointer
+					  (c-struct sample)
+					  (struct-type sample)
+					  (get-private-slot-util
+					   member)))
+		 (offset (cffi:foreign-slot-offset (struct-type sample)
+										   (get-private-slot-util
+											member)))
+		 (member-addr (cffi:pointer-address member-ptr))
+		 (base-addr (- member-addr offset)))
+	(cffi:make-pointer base-addr)))

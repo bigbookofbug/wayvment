@@ -8,6 +8,8 @@
    #:wl-object
    ;; wl-list-exports
    #:wl-list
+   #:next
+   #:prev
    #:wl-list-init
    #:wl-list-insert
    #:wl-list-remove
@@ -89,14 +91,20 @@ represented by LIST."
   (list :pointer)
   (other :pointer))
 
-;; WL_TYPEOF(expr) = typeof(expr)
-;; used to get the address of a container struct from one of its members.
-;; (defun container-of (pointer, sample, member)
-;; ;; ([typeof(sample)] ptr[as string] - offset ([typeof](*sample), member)))
-;; ideally, we can use classes to avoid needing this
-;; (defun container-of (ptr type member)
-;; ;;   (declare (type cffi:foreign-pointer ptr))
-;; ;;   (cffi:make-pointer (- (cffi:pointer-address ptr) (cffi:foreign-slot-offset type member))))
+;;; WL_TYPEOF(expr) = typeof(expr)
+;;; used to get the address of a container struct from one of its members.
+;;; can be called like so:
+;; (let* ((struct-ptr (cffi:foreign-alloc '(:struct some-struct)))
+;; 		(member-ptr (cffi:foreign-slot-pointer struct-ptr
+;; '(:struct some-struct) 'p)))
+;; 	   (container-of member-ptr '(:struct some-struct) 'p))
+;;
+;; for a classed struct, such as wayland-list:
+;; ;; NOTE: this can probs be made simpler via a slot-val for struct type
+;; (let ((obj (make-my-object))
+;; ;; ;; (member (my-slot my-object)))
+;; ;; (container-of member '(:struct my-struct) 'my-slot)
+
 
 (cffi:defcstruct wl-array
   (size :sizet)
