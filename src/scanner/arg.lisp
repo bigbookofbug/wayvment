@@ -1,4 +1,5 @@
 ;;;; arg.lisp
+(in-package #:wayvment.scanner)
 
 (defclass wl-arg ()
   ((name :initarg :name

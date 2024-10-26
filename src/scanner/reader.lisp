@@ -1,3 +1,6 @@
+;;;; reader.lisp
+(in-package #:wayvment.scanner)
+
 (defun nested-remove (x)
   (if (listp x)
 	  (remove nil (mapcar #'nested-remove x))

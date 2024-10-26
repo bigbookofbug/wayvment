@@ -15,8 +15,9 @@ Returns a pointer to display connected to. It is discouraged to
 use this function directly unless necessary. In most cases, use
 `with-display`."
   (if (not name)
-	  (ffi-client::wl-display-connect (or +envar-wl-display-xdg+
-												   +envar-wl-display-xdg-wl-0+))
+	  (ffi-client::wl-display-connect
+	   (or +envar-wl-display-xdg+
+		   +envar-wl-display-xdg-wl-0+))
 	  (ffi-client::wl-display-connect name)))
 
 (defun display-disconnect (display)

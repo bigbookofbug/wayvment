@@ -1,4 +1,5 @@
 ;;;; protocol.lisp
+(in-package #:wayvment.scanner)
 
 (defclass wl-protocol ()
   ((name :initarg :name

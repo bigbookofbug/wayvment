@@ -10,7 +10,8 @@
 			   #:cffi
 			   #:cffi-libffi
 			   #:alexandria
-			   #:trivial-garbage)
+			   #:xmls
+			   #:cl-ppcre)
   :components ((:module "src"
 				:components ((:file "package")
 							 (:module "wayland-cffi"
@@ -19,7 +20,17 @@
 										   (:file "wayland-util")))
 							 (:module "lisp"
 							  :depends-on ("package" "wayland-cffi")
-							  :components ((:file "wl-util")))))
+							  :components ((:file "wl-util")))
+							 (:module "scanner"
+									  :depends-on ("package" "lisp")
+									  :components ((:file "reader")
+												   (:file "description")
+												   (:file "enum")
+												   (:file "arg")
+												   (:file "request")
+												   (:file "event")
+												   (:file "interface")
+												   (:file "protocol")))))
 			   (:module "tests"
 				:depends-on ("src")
 				:components ((:file "test-helpers")

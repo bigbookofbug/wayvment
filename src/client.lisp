@@ -92,6 +92,7 @@
 	 (version :uint32))
   (format t "interface: ~a, version: ~a, name ~a~%"
 		  interface version name))
+
 (cffi:defcallback registry-handle-global-remove :void
 	((data :pointer)
 	 (registry :pointer)

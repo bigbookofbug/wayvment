@@ -46,6 +46,12 @@
    #:display-destroy
    #:dsiplay-add-socket))
 
+(uiop:define-package #:wayvment.scanner
+  (:nicknames #:wayland-scanner)
+  (:use #:cl)
+  (:use-reexport
+   #:wayvment.util))
+
 
 (defpackage #:wayvment.tests
   (:use #:wayvment.util #:cl))

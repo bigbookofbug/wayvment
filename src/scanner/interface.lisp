@@ -1,4 +1,5 @@
 ;;;; interface.lisp
+(in-package #:wayvment.scanner)
 
 ;; `name` and `version` cannot be nil
 ;; will need to add a checker for it

@@ -1,4 +1,5 @@
 ;;;; enum.lisp
+(in-package #:wayvment.scanner)
 
 (defclass wl-enum ()
   ((name :initarg :name
@@ -73,7 +74,27 @@
 
 ;; will create a plist of :name value
 ;; again will need to figure out what to do w/ since
-(defun write-entry (enums entries))
+(defun write-entry (iface enums entries)
+  (let* ((name (name entries))
+		 (interface-name (name iface))
+		 (val (value entries))
+		 (descr (description entries))
+		 (writer ""))
+	(when (description entries)
+	  (setf writer
+			(uiop:strcat writer (write-comment nil (desc descr) 2)"~%")))
+	(when (summary entries)
+	  (setf writer (uiop:strcat writer
+								(write-comment nil (summary entries) 2)"~%~2T")))
+	(if (not name)
+		(error "entry name is required")
+		(setf writer (uiop:strcat
+					  writer ":" interface-name"-"(name enums)"-"name " ")))
+	(if (not val)
+		(error "entry value is required")
+		(setf writer (uiop:strcat
+					  writer (value entries))))
+	writer))
 
 ;; will need to figure out what to do with the SINCE and BITFIELD fields
 (defun write-enum (iface enums)
@@ -91,11 +112,11 @@
 					  ;; TODO
 					  interface-name "-" (name enum) "~%")))
 	(setf writer (uiop:strcat writer "~T'("))
-	(dolist (i (entry enum) writer)
+	(dolist (i (reverse (entry enum)) writer)
 	  (setf writer (uiop:strcat writer
-								(unless (equal i (first (entry enum))) "~2T")
-								":test-entry-" (name i)
-								(unless (equal i (car (last (entry enum))))
+								(unless (equal i (car (last (entry enum)))) "~2T")
+								(write-entry iface enum i)
+								(unless (equal i (first (entry enum)))
 								"~%"))))
 	(setf writer (uiop:strcat writer "))~%"))
 	(if (not (cdr enums))

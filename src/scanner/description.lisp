@@ -1,4 +1,5 @@
 ;;;; description.lisp
+(in-package #:wayvment.scanner)
 
 (defclass wl-description ()
   ((summary :initarg :summary

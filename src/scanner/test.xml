@@ -97,6 +97,28 @@
       <entry name="implementation" value="3"
 	     summary="implementation error in compositor"/>
     </enum>
+    <!--
+client-side and server-side creates:
+enum wl_display_error {
+	/**
+	 * server couldn't find object
+	 */
+	WL_DISPLAY_ERROR_INVALID_OBJECT = 0,
+	/**
+	 * method doesn't exist on the specified interface or malformed request
+	 */
+	WL_DISPLAY_ERROR_INVALID_METHOD = 1,
+	/**
+	 * server is out of memory
+	 */
+	WL_DISPLAY_ERROR_NO_MEMORY = 2,
+	/**
+	 * implementation error in compositor
+	 */
+	WL_DISPLAY_ERROR_IMPLEMENTATION = 3,
+};
+-->
+
 
     <event name="delete_id">
       <description summary="acknowledge object ID deletion">

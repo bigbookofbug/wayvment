@@ -1,4 +1,5 @@
 ;;;; event.lisp
+(in-package #:wayvment.scanner)
 
 (defclass wl-event ()
   ((name :initarg :name
