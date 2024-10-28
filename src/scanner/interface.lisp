@@ -84,6 +84,13 @@
 (defmethod call-ping ((listner wl-shell-surface-listener) &rest args)
   (funcall (ping listener) args))
 
+;; a possibility VVV
+(defmacro set-ping (listener &body body)
+  (setf (ping listener)
+    (cffi:defcallback shell-surface-handle-ping :void
+        ((data :pointer) (shell-surface :pointer) (serial :uint32))
+        (,body))))
+
 for the C interface:
 TODO:
 ;; will need to impl the callbacks
@@ -120,7 +127,7 @@ pointers to event functions."
 		   (setf writer (uiop:strcat writer (write-listner-cstruct iface)))
 		   (setf writer (uiop:strcat
 						 writer
-						 "~%(DEFCLASS " name " ()~%"
+						 "~%(DEFCLASS " name " (wayland-object)~%"
 						 "~2T("))
 			   (dolist (i (reverse (event iface)) writer)
 				 (setf writer
