@@ -91,21 +91,6 @@ represented by LIST."
   (list :pointer)
   (other :pointer))
 
-;;; WL_TYPEOF(expr) = typeof(expr)
-;;; used to get the address of a container struct from one of its members.
-;;; can be called like so:
-;; (let* ((struct-ptr (cffi:foreign-alloc '(:struct some-struct)))
-;; 		(member-ptr (cffi:foreign-slot-pointer struct-ptr
-;; '(:struct some-struct) 'p)))
-;; 	   (container-of member-ptr '(:struct some-struct) 'p))
-;;
-;; for a classed struct, such as wayland-list:
-;; ;; NOTE: this can probs be made simpler via a slot-val for struct type
-;; (let ((obj (make-my-object))
-;; ;; ;; (member (my-slot my-object)))
-;; ;; (container-of member '(:struct my-struct) 'my-slot)
-
-
 (cffi:defcstruct wl-array
   (size :sizet)
   (alloc :sizet)
@@ -124,3 +109,24 @@ represented by LIST."
 (cffi:defcfun "wl_array_copy" :int
   (array :pointer)
   (source :pointer))
+
+(cffi:defcunion wl-argument
+  (i :int32) ;;int
+  (u :uint32) ;; uint
+  ;; wl_fixed_t
+  ;; is float enough?
+  (f :float) ;; fixed
+  (s :string) ;; string
+  (o :pointer) ;; object
+  (n :uint32) ;; new_id
+  (s :pointer) ;; array
+  (h :uint32)) ;; fd
+
+;;;
+;; some dispatcher funcs occur in about this area
+;; are they necessary ?
+;;;
+
+(cffi:defcenum wl-iterator-result
+  :wl-iterator-stop
+  :wl-iterator-continue)

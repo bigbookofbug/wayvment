@@ -107,13 +107,13 @@
 (cffi:defcfun "wl_proxy_marshal_constructor" :pointer ;; struct wl_proxy*
   (proxy :pointer)
   (opcode :uint32)
-  (pointer :interface))
+  (interface :pointer))
 
 ;; TODO -- also takes variadic args
 (cffi:defcfun "wl_proxy_marshal_constructor_versioned" :pointer ;; struct wl_proxy*
   (proxy :pointer)
   (opcode :uint32)
-  (pointer :interface)
+  (interface :pointer)
   (version :uint32))
 
 (cffi:defcfun "wl_proxy_marshal_array_constructor" :pointer ;;struct wl_proxy*
@@ -170,7 +170,7 @@
 (cffi:defcfun "wl_proxy_get_class" :string
   (proxy :pointer))
 
-(cffi:defcstruct "wl_proxy_get_display" :pointer ;; struct display*
+(cffi:defcfun "wl_proxy_get_display" :pointer ;; struct display*
   (proxy :pointer))
 
 (cffi:defcfun "wl_proxy_set_queue" :void
@@ -205,11 +205,59 @@
   "number of dispatch events on success, -1 on failure."
   (display :pointer))
 
-;;; continue from here^^^
+(cffi:defcfun "wl_display_dispatch_queue" :int
+  (display :pointer)
+  (queue :pointer))
+
+(cffi:defcfun "wl_display_dispatch_queue_pending" :int
+  (display :pointer)
+  (queue :pointer))
+
+(cffi:defcfun "wl_display_dispatch_pending" :int
+  (display :pointer))
+
+(cffi:defcfun "wl_display_get_error" :int
+  (display :pointer))
+
+(cffi:defcfun "wl_display_get_protocol_error" :uint32
+  (display :pointer)
+  (interface (:pointer (:pointer))) ;; struct wl_interface **interface
+  (id :pointer)) ;; uint32 *id
 
 (cffi:defcfun "wl_display_flush" :int
   "-1 on failure."
   (display :pointer))
 
+(cffi:defcfun "wl_display_roundtrip_queue" :int
+  (display :pointer)
+  (queue :pointer))
+
 (cffi:defcfun "wl_display_roundtrip" :int
   (display :pointer))
+
+(cffi:defcfun "wl_display_create_queue" :pointer
+  (display :pointer))
+
+(cffi:defcfun "wl_display_create_queue_with_name" :pointer
+  (display :pointer)
+  (name :string))
+
+(cffi:defcfun "wl_display_prepare_read_queue" :int
+  (display :pointer)
+  (queue :pointer))
+
+(cffi:defcfun "wl_display_prepare_read" :int
+  (display :pointer))
+
+(cffi:defcfun "wl_display_cancel_read" :void
+  (display :pointer))
+
+(cffi:defcfun "wl_display_read_events" :int
+  (display :pointer))
+
+(cffi:defcfun "wl_display_handler_client" :void
+  (handler :pointer)) ;; wl_log_func_t
+
+(cffi:defcfun "wl_display_set_max_buffer_size" :void
+  (display :pointer)
+  (max-buffer-size :sizet))

@@ -36,3 +36,20 @@
 			 (setf (args event)
 				   (append (list (parse-arg i)) (args event))))))
 	event))
+
+(defun write-listener-events (event iface)
+  (let ((ename (name event))
+		(descr (description event))
+		(writer ""))
+	(setf writer (uiop:strcat writer "(" ename " "))
+	(when descr
+	  (setf writer (uiop:strcat writer ":documentation \"" (summary descr) "\"~%")))
+	(setf writer (uiop:strcat writer
+							  "~4T:initarg :" ename "~%"
+							  "~4T:accessor " ename "~%"
+							  "~4T:initform~%~4T (lambda ("))
+	(setf writer (uiop:strcat writer "DATA " (name iface)))
+	(when (args event)
+	  (dolist (i (args event) writer)
+		(setf writer (uiop:strcat writer " " (name i)))))
+	(setf writer (uiop:strcat writer ") \"handle args here\"))"))))

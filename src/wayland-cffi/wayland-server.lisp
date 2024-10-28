@@ -21,6 +21,21 @@
   (t (:default "libwayland-server.so")))
  (cffi:use-foreign-library wayland-server)
 
+(cffi:defcenum wl-event-enum
+  (:wl-event-readable 0x01)
+  (:wl-event-writable 0x02)
+  (:wl-event-hangup 0x04)
+  (:wl-event-error 0x08))
+
+;;;
+;;; FD-TYPES
+;;;
+(cffi:defcfun "wl_event_loop_fd_func_t" :pointer
+  (fd :int)
+  (mask :uint32)
+  (data :pointer))
+
+
 ;;;
 ;;; EVENT LOOP
 ;;;

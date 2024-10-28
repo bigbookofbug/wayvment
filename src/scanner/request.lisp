@@ -1,4 +1,5 @@
 ;;;; request.lisp
+(in-package #:wayvment.scanner)
 
 (defclass wl-request ()
   ((name :initarg :name

@@ -97,11 +97,12 @@
 	writer))
 
 ;; will need to figure out what to do with the SINCE and BITFIELD fields
-(defun write-enum (iface enums)
+(defun write-enum (iface enums &optional writer)
   (let* ((enum (car enums))
 		 (interface-name (name iface))
-		 (writer "")
 		 (descr (description enum)))
+	(when (not writer)
+	  (setf writer ""))
 	(when (description enum)
 		   (setf writer
 				 (uiop:strcat writer (write-comment nil (desc descr) 3))))
@@ -118,7 +119,23 @@
 								(write-entry iface enum i)
 								(unless (equal i (first (entry enum)))
 								"~%"))))
-	(setf writer (uiop:strcat writer "))~%"))
+	(setf writer (uiop:strcat writer "))~2%"))
 	(if (not (cdr enums))
 		writer
-		(write-enum iface (cdr enums)))))
+		(write-enum iface (cdr enums) writer))))
+
+(defun write-enums-all (iface-list &optional writer)
+  "Where IFACE-LIST is the list of interfaces in the protocol object,
+and WRITER is the write string (initially set to \"\" and iterated over).
+This function is used to intialize all enums of all intefaces in
+INTERFACE-LIST.
+Used internally by the writer -- direct use is generally discouraged."
+  (let ((iface (car iface-list)))
+	(when (not writer)
+	  (setf writer ""))
+	(when (enums iface)
+	(setf writer (uiop:strcat writer
+							  (write-enum iface (enums iface)))))
+	(if (not (cdr iface-list))
+		writer
+		(write-enums-all (cdr iface-list) writer))))

@@ -15,7 +15,11 @@
 			 :type (or nil cffi:foreign-pointer)
 			 :accessor c-struct
 			 :documentation "Helper slot to access the memory
-address of the instance itself.")))
+address of the instance itself.")
+   (implementation :accessor implementation
+				   :initarg :implementation
+				   :initform nil
+				   :type (or nil cffi:foreign-pointer))))
 
 ;;;
 ;;; WL-MESSAGE
@@ -39,6 +43,29 @@ When args are NIL, is an empty string.")
 ;;;
 ;;; WL-INTERFACE
 ;;;
+(defclass interface (wayland-object)
+  ((name :initarg :name
+		 :accessor name
+		 :initform nil
+		 :type string)
+   (version :initarg :version
+			:accessor version
+			:initform nil
+			:type integer)
+   (method-count :accessor method-count
+				 :initarg :method-count
+				 :initform nil
+				 :type integer)
+   (methods :accessor methods
+			:initarg :methods
+			:initform nil)
+   (event-count :accessor event-count
+				 :initarg :event-count
+				 :initform nil
+				 :type integer)
+   (events :accessor events
+			:initarg :events
+			:initform nil)))
 
 ;;;
 ;;; WL-LIST
@@ -72,7 +99,6 @@ of this class is generally discouraged. Instead, use
 	(setf (c-struct wlist) c-list)
 	(setf (prev wlist) (cffi:mem-aref c-list :pointer 0))
 	(setf (next wlist) (cffi:mem-aref c-list :pointer 1))))
-
 
 (defmethod cleanup ((inst wayland-list))
   (let* ((obj (struct-type inst))

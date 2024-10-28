@@ -27,3 +27,9 @@
 				   (append (list (parse-interface i)) (interface protocol))))))
 	protocol))
 
+(defun write-copyright (prot out)
+  "Where PROT is the protocol object, and OUT is the
+output for the generatef format string.
+Formats the copyright as a top-level comment"
+  (let ((cp (copyright prot)))
+	(write-comment out cp 4)))

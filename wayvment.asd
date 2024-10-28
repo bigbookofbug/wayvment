@@ -23,6 +23,7 @@
 							  :components ((:file "wl-util")))
 							 (:module "scanner"
 									  :depends-on ("package" "lisp")
+									  :serial t
 									  :components ((:file "reader")
 												   (:file "description")
 												   (:file "enum")
